@@ -18,6 +18,4 @@ public class ChatCompletionRequest {
     private Double temperature;
 
     private Integer maxTokens;
-
-    private Boolean stream;
 }

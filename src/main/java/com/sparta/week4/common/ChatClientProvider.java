@@ -2,6 +2,7 @@ package com.sparta.week4.common;
 
 import com.sparta.week4.enums.ChatClientModelType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import static com.sparta.week4.enums.ChatClientModelType.fromModel;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ChatClientProvider {
@@ -23,6 +25,7 @@ public class ChatClientProvider {
             throw new IllegalArgumentException("ChatClient not found for model: " + modelName);
         }
 
+        log.info("ChatClient model: {}", modelType.getModel());
         return chatClient;
     }
 }

@@ -5,12 +5,15 @@ import com.sparta.week4.converter.ChatMessageConverter;
 import com.sparta.week4.dto.ChatCompletionRequest;
 import com.sparta.week4.dto.ChatCompletionResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.Map;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MyAiChatService implements AiChatService {
@@ -37,11 +40,27 @@ public class MyAiChatService implements AiChatService {
     }
 
     @Override
-    public ChatCompletionResponse chatSteam(
+    public Flux<ServerSentEvent<String>> chatSteam(
             ChatCompletionRequest chatRequest
     ) {
         ChatClient chatClient = chatClientProvider.getChatClient(chatRequest.getModel());
 
-        return null;
+        String promptMessage = chatMessageConverter.convertToPrompt(chatRequest.getMessages());
+
+        return chatClient.prompt()
+                .user(u ->
+                        u.text(promptMessage)
+                ).stream()
+                .chatResponse()
+                .map(mono -> ServerSentEvent.<String> builder()
+                        .data(chatMessageConverter.convertToResponseJson(mono))
+                        .build()
+                ).concatWith(
+                        Mono.just(
+                                ServerSentEvent.<String> builder()
+                                        .data("[DONE]")
+                                        .build()
+                        )
+                );
     }
 }

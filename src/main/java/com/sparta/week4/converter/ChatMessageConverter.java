@@ -1,6 +1,9 @@
 package com.sparta.week4.converter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.week4.dto.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.stereotype.Component;
@@ -11,7 +14,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class ChatMessageConverter {
+
+    private final ObjectMapper objectMapper;
 
     public String convertToPrompt(List<Message> messages) {
         return messages.stream()
@@ -51,6 +57,17 @@ public class ChatMessageConverter {
                 .collect(Collectors.toList());
 
         return new ChatCompletionResponse(id, object, created, model, choices, usage);
+    }
+
+    public String convertToResponseJson(
+            ChatResponse chatResponse
+    ) {
+        ChatCompletionResponse response = convertToResponse(chatResponse);
+        try {
+            return objectMapper.writeValueAsString(response);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to convert response to JSON", e);
+        }
     }
 
     private Usage extractUsage(ChatResponse chatResponse) {
