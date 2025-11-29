@@ -1,9 +1,6 @@
 package com.sparta.week4.converter;
 
-import com.sparta.week4.dto.ChatCompletionResponse;
-import com.sparta.week4.dto.Choice;
-import com.sparta.week4.dto.MessageResponse;
-import com.sparta.week4.dto.Usage;
+import com.sparta.week4.dto.*;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.stereotype.Component;
@@ -14,9 +11,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Component
-public class ChatResponseConverter {
+public class ChatMessageConverter {
 
-    public ChatCompletionResponse convert(
+    public String convertToPrompt(List<Message> messages) {
+        return messages.stream()
+                .filter(x -> x.getRole().equals("user"))
+                .findFirst()
+                .map(Message::getContent)
+                .orElseThrow(() -> new RuntimeException("Message not found"));
+    }
+
+    public ChatCompletionResponse convertToResponse(
             ChatResponse chatResponse
     ) {
         ChatResponseMetadata responseMetadata = chatResponse.getMetadata();

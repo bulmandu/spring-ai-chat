@@ -21,6 +21,6 @@ public class AiChatController {
     public ResponseEntity<ChatCompletionResponse> completionsChat(
             @RequestBody ChatCompletionRequest chatRequest
     ) {
-        return ResponseEntity.ok(aiChatService.chat(chatRequest));
+        return ResponseEntity.ok(aiChatService.chatSync(chatRequest));
     }
 }
