@@ -21,20 +21,17 @@ public class AiChatController {
     private final AiChatService aiChatService;
 
     @PostMapping("/completions")
-    public ResponseEntity<ChatCompletionResponse> completionsChat(
+    public ResponseEntity<?> completionsChat(
             @RequestBody ChatCompletionRequest chatRequest
     ) {
+        if (chatRequest.getStream()) {
+            Flux<ServerSentEvent<String>> fluxResponse = aiChatService.chatSteam(chatRequest);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_EVENT_STREAM)
+                    .body(fluxResponse);
+        }
+
         return ResponseEntity.ok(aiChatService.chatSync(chatRequest));
     }
-
-    @PostMapping(
-            path = "/stream-completions",
-            produces = MediaType.TEXT_EVENT_STREAM_VALUE
-    )
-    public Flux<ServerSentEvent<String>> streamCompletionsChat(
-            @RequestBody ChatCompletionRequest chatRequest
-    ) {
-        return aiChatService.chatSteam(chatRequest);
-    }
-
 }
