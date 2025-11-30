@@ -1,23 +1,24 @@
 package com.sparta.week4.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ChatCompletionRequest {
 
+    @NotNull
     private String model;
 
+    @NotNull
     private List<Message> messages;
 
     private Double temperature;
 
     private Integer maxTokens;
 
-    private Boolean stream;
+    private Boolean stream = false;
 }

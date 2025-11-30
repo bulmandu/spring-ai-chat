@@ -1,7 +1,6 @@
 package com.sparta.week4;
 
 import com.sparta.week4.dto.ChatCompletionRequest;
-import com.sparta.week4.dto.ChatCompletionResponse;
 import com.sparta.week4.service.AiChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/v1/chat")
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class AiChatController {
 
     @PostMapping("/completions")
     public ResponseEntity<?> completionsChat(
-            @RequestBody ChatCompletionRequest chatRequest
+            @RequestBody @Valid ChatCompletionRequest chatRequest
     ) {
         if (chatRequest.getStream()) {
             Flux<ServerSentEvent<String>> fluxResponse = aiChatService.chatSteam(chatRequest);
