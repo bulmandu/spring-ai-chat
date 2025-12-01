@@ -9,6 +9,40 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
+    networks:
+      - chatbot-network
+
+  spring-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - ollama
+    ports:
+      - "8080:8080"
+    container_name: spring-ai
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    networks:
+      - chatbot-network
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    depends_on:
+      - spring-ai
+    environment:
+      OPENAI_API_BASE_URL: http://spring-ai:8080/v1
+      OPENAI_API_KEY: dummy-key
+    networks:
+      - chatbot-network
+    ports:
+      - "3000:8080"
 
 volumes:
   ollama_data:
+
+networks:
+  chatbot-network:
+    driver: bridge
