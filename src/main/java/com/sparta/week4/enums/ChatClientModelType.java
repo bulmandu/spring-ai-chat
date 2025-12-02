@@ -7,16 +7,18 @@ import java.util.Arrays;
 @Getter
 public enum ChatClientModelType {
 
-    OLLAMA("ollamaChatClient", "qwen3"),
-    ANTHROPIC("anthropicChatClient", "claude-2"),
+    OLLAMA("ollamaChatClient", "qwen3", "ollama"),
+    ANTHROPIC("anthropicChatClient", "claude-2", "claude")
     ;
 
     private final String chatClient;
     private final String model;
+    private final String ownedBy;
 
-    ChatClientModelType(String chatClient, String model) {
+    ChatClientModelType(String chatClient, String model, String ownedBy) {
         this.chatClient = chatClient;
         this.model = model;
+        this.ownedBy = ownedBy;
     }
 
     public static ChatClientModelType fromModel(String model) {

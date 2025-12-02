@@ -1,15 +1,14 @@
 package com.sparta.week4;
 
 import com.sparta.week4.dto.ChatCompletionRequest;
+import com.sparta.week4.dto.ChatModelResponse;
 import com.sparta.week4.service.AiChatService;
+import com.sparta.week4.service.ChatModelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.ServerSentEvent;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import jakarta.validation.Valid;
@@ -20,6 +19,13 @@ import jakarta.validation.Valid;
 public class AiChatController {
 
     private final AiChatService aiChatService;
+
+    private final ChatModelService chatModelService;
+
+    @GetMapping("/completions")
+    public ResponseEntity<ChatModelResponse> getChatModels() {
+        return ResponseEntity.ok(chatModelService.getChatModels());
+    }
 
     @PostMapping("/completions")
     public ResponseEntity<?> completionsChat(
