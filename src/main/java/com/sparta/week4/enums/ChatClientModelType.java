@@ -8,7 +8,7 @@ import java.util.Arrays;
 public enum ChatClientModelType {
 
     OLLAMA("ollamaChatClient", "qwen3", "ollama"),
-    ANTHROPIC("anthropicChatClient", "claude-2", "claude")
+    ANTHROPIC("anthropicChatClient", "claude-sonnet-4-5-20250929", "claude")
     ;
 
     private final String chatClient;
