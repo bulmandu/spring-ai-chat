@@ -1,4 +1,4 @@
-# Week4 - Spring AI Chat Application
+# Spring AI Chat Application
 
 OpenAI 호환 API를 제공하는 Spring AI 기반 채팅 애플리케이션입니다. Anthropic Claude와 Ollama 모델을 지원하며, Open-WebUI를 통한 웹 인터페이스를 제공합니다.
 
