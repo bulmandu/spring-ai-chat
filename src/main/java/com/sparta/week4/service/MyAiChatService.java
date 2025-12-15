@@ -31,7 +31,7 @@ public class MyAiChatService implements AiChatService {
     ) {
         ChatClient chatClient = chatClientProvider.getChatClient(chatRequest.getModel());
 
-        List<Message> messages = chatMessageConverter.convertToMessages(chatRequest.getChatMessages());
+        List<Message> messages = chatMessageConverter.convertToMessages(chatRequest.getMessages());
 
         ChatResponse chatResponse = chatClient.prompt()
                 .messages(messages)
@@ -47,7 +47,7 @@ public class MyAiChatService implements AiChatService {
     ) {
         ChatClient chatClient = chatClientProvider.getChatClient(chatRequest.getModel());
 
-        List<Message> messages = chatMessageConverter.convertToMessages(chatRequest.getChatMessages());
+        List<Message> messages = chatMessageConverter.convertToMessages(chatRequest.getMessages());
 
         return chatClient.prompt()
                 .messages(messages)

@@ -14,7 +14,7 @@ public class ChatCompletionRequest {
     private String model;
 
     @NotNull
-    private List<ChatMessage> chatMessages;
+    private List<ChatMessage> messages;
 
     private Double temperature;
 
