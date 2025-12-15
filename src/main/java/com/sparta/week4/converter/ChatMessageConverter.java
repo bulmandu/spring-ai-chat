@@ -3,7 +3,11 @@ package com.sparta.week4.converter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.week4.dto.*;
+import com.sparta.week4.dto.ChatMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.stereotype.Component;
@@ -19,12 +23,26 @@ public class ChatMessageConverter {
 
     private final ObjectMapper objectMapper;
 
-    public String convertToPrompt(List<Message> messages) {
-        return messages.stream()
+    public String convertToStringPrompt(List<ChatMessage> chatMessages) {
+        return chatMessages.stream()
                 .filter(x -> x.getRole().equals("user"))
                 .findFirst()
-                .map(Message::getContent)
-                .orElseThrow(() -> new RuntimeException("Message not found"));
+                .map(ChatMessage::getContent)
+                .orElseThrow(() -> new RuntimeException("ChatMessage not found"));
+    }
+
+    public List<Message> convertToMessages(
+            List<ChatMessage> chatMessages
+    ) {
+        return chatMessages.stream()
+                .map(msg -> {
+                    return switch (msg.getRole()) {
+                        case "user" -> new UserMessage(msg.getContent());
+                        case "assistant" -> new AssistantMessage(msg.getContent());
+                        default -> throw new RuntimeException("Unexpected role value: " + msg.getRole());
+                    };
+                })
+                .collect(Collectors.toList());
     }
 
     public ChatCompletionResponse convertToResponse(

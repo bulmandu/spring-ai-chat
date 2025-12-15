@@ -188,7 +188,7 @@ Content-Type: application/json
 ```json
 {
   "model": "claude",
-  "messages": [
+  "chatMessages": [
     {
       "role": "system",
       "content": "You are a helpful assistant."
@@ -240,7 +240,7 @@ Content-Type: application/json
 ```json
 {
   "model": "ollama",
-  "messages": [
+  "chatMessages": [
     {
       "role": "user",
       "content": "안녕하세요!"

@@ -7,11 +7,14 @@ import com.sparta.week4.dto.ChatCompletionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -28,12 +31,11 @@ public class MyAiChatService implements AiChatService {
     ) {
         ChatClient chatClient = chatClientProvider.getChatClient(chatRequest.getModel());
 
-        String promptMessage = chatMessageConverter.convertToPrompt(chatRequest.getMessages());
+        List<Message> messages = chatMessageConverter.convertToMessages(chatRequest.getChatMessages());
 
         ChatResponse chatResponse = chatClient.prompt()
-                .user(u ->
-                        u.text(promptMessage)
-                ).call()
+                .messages(messages)
+                .call()
                 .chatResponse();
 
         return chatMessageConverter.convertToResponse(chatResponse);
@@ -45,12 +47,11 @@ public class MyAiChatService implements AiChatService {
     ) {
         ChatClient chatClient = chatClientProvider.getChatClient(chatRequest.getModel());
 
-        String promptMessage = chatMessageConverter.convertToPrompt(chatRequest.getMessages());
+        List<Message> messages = chatMessageConverter.convertToMessages(chatRequest.getChatMessages());
 
         return chatClient.prompt()
-                .user(u ->
-                        u.text(promptMessage)
-                ).stream()
+                .messages(messages)
+                .stream()
                 .chatResponse()
                 .map(mono -> ServerSentEvent.<String> builder()
                         .data(chatMessageConverter.convertToResponseJson(mono))
