@@ -36,7 +36,8 @@ OpenAI 호환 API를 제공하는 Spring AI 기반 채팅 애플리케이션입�
 
 ```
 src/main/java/com/sparta/week4/
-├── AiChatController.java              # REST API 컨트롤러
+├── AiChatController.java              # 채팅 REST API 컨트롤러
+├── ChatModelController.java           # 모델 조회 REST API 컨트롤러
 ├── Week4Application.java              # 메인 애플리케이션
 ├── common/
 │   └── ChatClientProvider.java        # Chat Client 제공자
@@ -51,7 +52,7 @@ src/main/java/com/sparta/week4/
 │   ├── ChatCompletionResponse.java    # 채팅 응답 DTO
 │   ├── ChatModelResponse.java         # 모델 목록 응답 DTO
 │   ├── ModelData.java                 # 모델 데이터 DTO
-│   ├── Message.java                   # 메시지 DTO
+│   ├── ChatMessage.java               # 채팅 메시지 DTO
 │   ├── MessageResponse.java           # 메시지 응답 DTO
 │   ├── Choice.java                    # 선택지 DTO
 │   └── Usage.java                     # 토큰 사용량 DTO
@@ -92,7 +93,7 @@ spring:
           temperature: 0.7
           max-tokens: 4096
     ollama:
-      base-url: http://ollama:11434  # Docker 환경
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}  # OLLAMA 서버 주소
       chat:
         options:
           model: qwen2.5:3b
@@ -153,7 +154,7 @@ docker-compose down -v
 ### 1. 사용 가능한 모델 목록 조회
 
 ```bash
-GET /v1/chat/completions
+GET /v1/models
 ```
 
 **Response:**
@@ -188,7 +189,7 @@ Content-Type: application/json
 ```json
 {
   "model": "claude",
-  "chatMessages": [
+  "messages": [
     {
       "role": "system",
       "content": "You are a helpful assistant."
@@ -240,7 +241,7 @@ Content-Type: application/json
 ```json
 {
   "model": "ollama",
-  "chatMessages": [
+  "messages": [
     {
       "role": "user",
       "content": "안녕하세요!"
@@ -319,7 +320,7 @@ docker network inspect week4_chatbot-network
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/v1/chat/completions` | 사용 가능한 모델 목록 조회 |
+| GET | `/v1/models` | 사용 가능한 모델 목록 조회 |
 | POST | `/v1/chat/completions` | 채팅 완료 (Sync/Stream) |
 
 ## 보안 주의사항
