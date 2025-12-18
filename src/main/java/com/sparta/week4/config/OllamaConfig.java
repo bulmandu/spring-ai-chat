@@ -1,9 +1,9 @@
 package com.sparta.week4.config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.ollama.api.OllamaApi;
 import org.springframework.ai.ollama.api.OllamaOptions;
@@ -55,12 +55,16 @@ public class OllamaConfig {
     }
 
     @Bean
-    public ChatClient ollamaChatClient(OllamaChatModel ollamaChatModel) {
+    public ChatClient ollamaChatClient(
+            OllamaChatModel ollamaChatModel,
+            MessageChatMemoryAdvisor advisor
+    ) {
         return ChatClient.builder(ollamaChatModel)
                 .defaultSystem("""
                 당신은 친절하고 도움이 되는 AI 어시스턴트입니다.
                 사용자의 질문에 정확하고 이해하기 쉽게 답변해주세요.
                 """
-                ).build();
+                ).defaultAdvisors(advisor)
+                .build();
     }
 }
